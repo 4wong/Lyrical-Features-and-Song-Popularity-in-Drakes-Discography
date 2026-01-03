@@ -157,3 +157,12 @@ plt.xlabel("Word Count")
 plt.ylabel("Log Track Views")
 plt.title("Word Count vs Log-Transformed Track Views")
 plt.show()
+
+# Word count shows no strong relationship with log-transformed track views, indicating that song popularity varies widely across both shorter and longer lyrics.
+
+plt.figure()
+plt.scatter(df["sentiment_score"], df["log_track_views"], alpha=0.6)
+plt.xlabel("Sentiment Score (VADER)")
+plt.ylabel("Log Track Views")
+plt.title("Sentiment vs Log-Transformed Track Views")
+plt.show()
