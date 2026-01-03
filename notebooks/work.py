@@ -3,8 +3,6 @@ import numpy as np
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-nltk.download('vader_lexicon')
-
 # Load the dataset from the data/ folder
 df = pd.read_csv("data/drake_data.csv")
 
@@ -197,6 +195,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = LinearRegression()
 model.fit(X_train, y_train)
 
+
 y_pred = model.predict(X_test)
 r2 = r2_score(y_test, y_pred)
 print("R^2 on test set:", round(r2, 3))
@@ -207,3 +206,34 @@ coef_df = pd.DataFrame({
 }).sort_values("coefficient", key=abs, ascending=False)
 
 print(coef_df)
+
+
+# A linear regression model was fit to access associations between lyrical features and log-transformed track views.
+# The model explains a moderate portion of variance (R^2 ≈ 0.13), indicating that lyrical characteristics alone affect
+# popularity differences to a small degree. Coefficient sizes suggest that explicit word usage and
+# first-person pronoun frequency show positive associations with popularity, while vocabulary diversity shows a
+# negative association. We interpret these effects as correlational rather than causal, and substantial
+# unexplained variance likely reflects non-lyrical factors such as marketing, timing, and audience exposure.
+# word_count and sentiment_score's coefficient values of ~0 confirm our previous analysis.
+
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+X_train_s, X_test_s, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42
+)
+
+model_std = LinearRegression()
+model_std.fit(X_train_s, y_train)
+
+y_pred_s = model_std.predict(X_test_s)
+r2_std = r2_score(y_test, y_pred_s)
+
+coef_std = pd.DataFrame({
+    "feature": features,
+    "standardized_coefficient": model_std.coef_
+}).sort_values("standardized_coefficient", key=abs, ascending=False)
+
+print(coef_std)
