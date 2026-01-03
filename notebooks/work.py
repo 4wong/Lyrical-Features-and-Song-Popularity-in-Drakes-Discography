@@ -40,3 +40,26 @@ df = df.dropna(subset=["track_views_num"])
 df["log_track_views"] = np.log10(df["track_views_num"])
 
 print(df[["track_views", "track_views_num", "log_track_views"]].head())
+
+import re
+
+def preprocess_lyrics(text):
+    if not isinstance(text, str):
+        return []
+    
+    # lowercase
+    text = text.lower()
+    
+    # remove punctuation & numbers
+    text = re.sub(r"[^a-z\s]", "", text)
+    
+    # split into words
+    tokens = text.split()
+    
+    return tokens
+
+df["tokens"] = df["lyrics"].apply(preprocess_lyrics)
+
+df["word_count"] = df["tokens"].apply(len)
+
+print(df[["lyrics_title", "word_count"]].head())
