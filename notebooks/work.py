@@ -3,9 +3,6 @@ import numpy as np
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-nltk.download("vader_lexicon")
-
-
 # Load the dataset from the data/ folder
 df = pd.read_csv("data/drake_data.csv")
 
@@ -133,4 +130,21 @@ def explicit_word_ratio(tokens):
 df["explicit_word_ratio"] = df["tokens"].apply(explicit_word_ratio)
 
 print(df[["lyrics_title", "explicit_word_ratio"]].head())
-print(df["explicit_word_ratio"].describe())
+
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.hist(df["track_views_num"], bins=30)
+plt.xlabel("Raw Track Views")
+plt.ylabel("Frequency")
+plt.title("Distribution of Raw Track Views")
+plt.show()
+
+plt.figure()
+plt.hist(df["log_track_views"], bins=30)
+plt.xlabel("Log Track Views")
+plt.ylabel("Frequency")
+plt.title("Distribution of Log-Transformed Track Views")
+plt.show()
+
+# Raw track views show a heavily right-skewed distribution, while the log-transformed values are more symmetric and suitable for analysis.
