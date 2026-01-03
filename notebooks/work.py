@@ -114,3 +114,23 @@ df["first_person_pronoun_ratio"] = df["tokens"].apply(first_person_pronoun_ratio
 
 print(df[["lyrics_title", "first_person_pronoun_ratio"]].head())
 
+EXPLICIT_WORDS = {
+    "fuck", "fucking", "fucked", "fuckin",
+    "shit", "shitty",
+    "bitch", "bitches",
+    "ass", "asshole",
+    "dick", "pussy",
+    "nigga", "niggas", # common in rap lyrics
+    "hoe", "hoes"
+}
+
+def explicit_word_ratio(tokens):
+    if not tokens:
+        return 0.0
+    count = sum(1 for t in tokens if t in EXPLICIT_WORDS)
+    return count / len(tokens)
+
+df["explicit_word_ratio"] = df["tokens"].apply(explicit_word_ratio)
+
+print(df[["lyrics_title", "explicit_word_ratio"]].head())
+print(df["explicit_word_ratio"].describe())
