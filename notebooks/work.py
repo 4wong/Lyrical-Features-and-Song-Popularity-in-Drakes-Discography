@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+
 # Load the dataset from the data/ folder
 df = pd.read_csv("data/drake_data.csv")
 
@@ -58,8 +59,21 @@ def preprocess_lyrics(text):
     
     return tokens
 
-df["tokens"] = df["lyrics"].apply(preprocess_lyrics)
+def is_valid_lyrics(tokens, min_words=100):
+    return len(tokens) >= min_words
+
+def unique_word_ratio(tokens):
+    if not tokens:
+        return 0.0
+    return len(set(tokens)) / len(tokens)
+
+df["tokens"] = df["lyrics"].apply(preprocess_lyrics) 
+
+# Filtering out snippets
+df = df[df["tokens"].apply(is_valid_lyrics)].reset_index(drop=True)
 
 df["word_count"] = df["tokens"].apply(len)
+df["unique_word_ratio"] = df["tokens"].apply(unique_word_ratio)
 
-print(df[["lyrics_title", "word_count"]].head())
+print(df[["lyrics_title", "word_count", "unique_word_ratio"]].head())
+
