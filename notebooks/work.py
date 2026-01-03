@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+nltk.download("vader_lexicon")
+
 
 # Load the dataset from the data/ folder
 df = pd.read_csv("data/drake_data.csv")
@@ -85,4 +90,15 @@ def avg_word_length(tokens):
 df["avg_word_length"] = df["tokens"].apply(avg_word_length)
 
 print(df[["lyrics_title", "word_count", "avg_word_length"]].head())
-print(df["avg_word_length"].describe())
+
+sia = SentimentIntensityAnalyzer()
+
+def sentiment_score(text):
+    if not isinstance(text, str) or text.strip() == "":
+        return 0.0
+    return sia.polarity_scores(text)["compound"]
+
+df["sentiment_score"] = df["lyrics"].apply(sentiment_score)
+
+print(df[["lyrics_title", "sentiment_score"]].head())
+print(df["sentiment_score"].describe())
