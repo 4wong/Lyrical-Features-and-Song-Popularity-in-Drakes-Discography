@@ -77,3 +77,12 @@ df["unique_word_ratio"] = df["tokens"].apply(unique_word_ratio)
 
 print(df[["lyrics_title", "word_count", "unique_word_ratio"]].head())
 
+def avg_word_length(tokens):
+    if not tokens:
+        return 0.0
+    return sum(len(word) for word in tokens) / len(tokens)
+
+df["avg_word_length"] = df["tokens"].apply(avg_word_length)
+
+print(df[["lyrics_title", "word_count", "avg_word_length"]].head())
+print(df["avg_word_length"].describe())
