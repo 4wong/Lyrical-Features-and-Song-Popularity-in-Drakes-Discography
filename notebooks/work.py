@@ -101,4 +101,16 @@ def sentiment_score(text):
 df["sentiment_score"] = df["lyrics"].apply(sentiment_score)
 
 print(df[["lyrics_title", "sentiment_score"]].head())
-print(df["sentiment_score"].describe())
+
+FIRST_PERSON = {"i", "me", "my", "mine", "im", "ive", "id"}
+
+def first_person_pronoun_ratio(tokens):
+    if not tokens:
+        return 0.0
+    count = sum(1 for t in tokens if t in FIRST_PERSON)
+    return count / len(tokens)
+
+df["first_person_pronoun_ratio"] = df["tokens"].apply(first_person_pronoun_ratio)
+
+print(df[["lyrics_title", "first_person_pronoun_ratio"]].head())
+
