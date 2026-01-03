@@ -3,6 +3,8 @@ import numpy as np
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
+nltk.download('vader_lexicon')
+
 # Load the dataset from the data/ folder
 df = pd.read_csv("data/drake_data.csv")
 
@@ -148,3 +150,10 @@ plt.title("Distribution of Log-Transformed Track Views")
 plt.show()
 
 # Raw track views show a heavily right-skewed distribution, while the log-transformed values are more symmetric and suitable for analysis.
+
+plt.figure()
+plt.scatter(df["word_count"], df["log_track_views"], alpha=0.6)
+plt.xlabel("Word Count")
+plt.ylabel("Log Track Views")
+plt.title("Word Count vs Log-Transformed Track Views")
+plt.show()
