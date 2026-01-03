@@ -44,8 +44,6 @@ df = df.dropna(subset=["track_views_num"])
 # Create log-transformed views (base 10)
 df["log_track_views"] = np.log10(df["track_views_num"])
 
-print(df[["track_views", "track_views_num", "log_track_views"]].head())
-
 import re
 
 def preprocess_lyrics(text):
@@ -79,16 +77,12 @@ df = df[df["tokens"].apply(is_valid_lyrics)].reset_index(drop=True)
 df["word_count"] = df["tokens"].apply(len)
 df["unique_word_ratio"] = df["tokens"].apply(unique_word_ratio)
 
-print(df[["lyrics_title", "word_count", "unique_word_ratio"]].head())
-
 def avg_word_length(tokens):
     if not tokens:
         return 0.0
     return sum(len(word) for word in tokens) / len(tokens)
 
 df["avg_word_length"] = df["tokens"].apply(avg_word_length)
-
-print(df[["lyrics_title", "word_count", "avg_word_length"]].head())
 
 sia = SentimentIntensityAnalyzer()
 
@@ -98,8 +92,6 @@ def sentiment_score(text):
     return sia.polarity_scores(text)["compound"]
 
 df["sentiment_score"] = df["lyrics"].apply(sentiment_score)
-
-print(df[["lyrics_title", "sentiment_score"]].head())
 
 FIRST_PERSON = {"i", "me", "my", "mine", "im", "ive", "id"}
 
@@ -111,7 +103,6 @@ def first_person_pronoun_ratio(tokens):
 
 df["first_person_pronoun_ratio"] = df["tokens"].apply(first_person_pronoun_ratio)
 
-print(df[["lyrics_title", "first_person_pronoun_ratio"]].head())
 
 EXPLICIT_WORDS = {
     "fuck", "fucking", "fucked", "fuckin",
@@ -130,8 +121,6 @@ def explicit_word_ratio(tokens):
     return count / len(tokens)
 
 df["explicit_word_ratio"] = df["tokens"].apply(explicit_word_ratio)
-
-print(df[["lyrics_title", "explicit_word_ratio"]].head())
 
 import matplotlib.pyplot as plt
 
@@ -182,3 +171,39 @@ plt.title("Log-Transformed Track Views by Album")
 plt.suptitle("")  # remove automatic pandas title
 plt.tight_layout()
 plt.show()
+
+# Certain albums exhibit higher median popularity than others, highlighting substantial differences in track performance across releases.
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+features = [
+    "word_count",
+    "unique_word_ratio",
+    "avg_word_length",
+    "sentiment_score",
+    "first_person_pronoun_ratio",
+    "explicit_word_ratio",
+]
+
+X = df[features]
+y = df["log_track_views"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print("R^2 on test set:", round(r2, 3))
+
+coef_df = pd.DataFrame({
+    "feature": features,
+    "coefficient": model.coef_
+}).sort_values("coefficient", key=abs, ascending=False)
+
+print(coef_df)
