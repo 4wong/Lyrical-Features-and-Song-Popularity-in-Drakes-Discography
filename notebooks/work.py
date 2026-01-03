@@ -166,3 +166,19 @@ plt.xlabel("Sentiment Score (VADER)")
 plt.ylabel("Log Track Views")
 plt.title("Sentiment vs Log-Transformed Track Views")
 plt.show()
+
+# Highly popular songs appear across both strongly positive and strongly negative sentiment values, indicating that overall lyrical polarity is not a strong predictor of popularity.
+
+# Filtering albums with more than 5 tracks as albums with very few songs make boxplots noisy
+album_counts = df["album"].value_counts()
+valid_albums = album_counts[album_counts >= 5].index
+df_album = df[df["album"].isin(valid_albums)]
+ 
+plt.figure(figsize=(10, 6))
+df_album.boxplot(column="log_track_views", by="album", rot=90)
+plt.xlabel("Album")
+plt.ylabel("Log Track Views")
+plt.title("Log-Transformed Track Views by Album")
+plt.suptitle("")  # remove automatic pandas title
+plt.tight_layout()
+plt.show()
