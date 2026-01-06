@@ -3,6 +3,12 @@ This project analyses how basic lyrical features relate to song popularity acros
 A linear regression model finds that lyrical features explain a modest share of popularity (R² ≈ 0.13), with simpler and more repetitive lyrics showing stronger associations with higher popularity than sentiment or song length. 
 Overall, the results suggest that lyrical structure matters more than lyrical tone, while most variation in popularity is driven by non-lyrical factors such as marketing, release context, and platform dynamics.
 
+## Data Ethics & Context
+
+This project analyses raw lyrics from Drake’s discography. As a result, the dataset contains explicit language and sensitive terms (including racial slurs).
+
+All terms are treated strictly as numerical tokens for the purpose of statistical analysis related to song popularity. The inclusion of these terms in the dataset and metadata is solely for reproducibility and research transparency and does not reflect the views or values of the author.
+
 ## Project Overview
 This project explores how basic lyrical characteristics such as length, vocabulary diversity, and sentiment relate to song popularity across Drake’s discography using lyrics sourced from Genius.
 
