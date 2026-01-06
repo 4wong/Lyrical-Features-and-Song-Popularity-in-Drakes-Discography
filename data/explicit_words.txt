@@ -1,0 +1,20 @@
+# The vocabulary used here  is used solely for analytical purposes to measure stylistic language patterns.
+# The inclusion of certain terms does not reflect endorsement, intent, or value judgment.
+# Words are treated as neutral tokens within a statistical analysis of song lyrics.
+
+fuck
+fucking
+fucked
+fuckin
+shit
+shitty
+bitch
+bitches
+ass
+asshole
+dick
+pussy
+nigga
+niggas
+hoe
+hoes
