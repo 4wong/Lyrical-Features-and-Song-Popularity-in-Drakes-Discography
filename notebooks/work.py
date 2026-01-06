@@ -102,15 +102,22 @@ def first_person_pronoun_ratio(tokens):
 df["first_person_pronoun_ratio"] = df["tokens"].apply(first_person_pronoun_ratio)
 
 
-EXPLICIT_WORDS = {
-    "fuck", "fucking", "fucked", "fuckin",
-    "shit", "shitty",
-    "bitch", "bitches",
-    "ass", "asshole",
-    "dick", "pussy",
-    "nigga", "niggas", # common in rap lyrics
-    "hoe", "hoes"
-}
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+
+def load_word_list(path: Path) -> set[str]:
+    """Load a newline-delimited wordlist, ignoring blank lines and # comments."""
+    with path.open("r", encoding="utf-8") as f:
+        return {
+            line.strip()
+            for line in f
+            if line.strip() and not line.strip().startswith("#")
+        }
+
+EXPLICIT_WORDS_PATH = ROOT_DIR / "data" / "explicit_words.txt"
+EXPLICIT_WORDS = load_word_list(EXPLICIT_WORDS_PATH)
+
 
 def explicit_word_ratio(tokens):
     if not tokens:
@@ -119,6 +126,8 @@ def explicit_word_ratio(tokens):
     return count / len(tokens)
 
 df["explicit_word_ratio"] = df["tokens"].apply(explicit_word_ratio)
+
+print("Loaded explicit words:", len(EXPLICIT_WORDS))
 
 import matplotlib.pyplot as plt
 
